@@ -1,18 +1,13 @@
 import GlobalStyles from './GlobalStyles';
-import styled from 'styled-components';
-import { Fragment } from 'react';
+import Router from './Router';
 
 const App = () => {
   return (
-    <Fragment>
+    <>
       <GlobalStyles />
-      <Div>sssssss</Div>
-    </Fragment>
+      <Router />
+    </>
   );
 };
 
 export default App;
-
-const Div = styled.h1`
-  border: 1px solid black;
-`;
