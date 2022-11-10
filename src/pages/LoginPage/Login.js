@@ -9,13 +9,71 @@ import { SiNaver } from 'react-icons/si';
 import { FcGoogle } from 'react-icons/fc';
 import { SlLogin } from 'react-icons/sl';
 import { IoPersonAdd } from 'react-icons/io5';
+import { Navigate, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
   const [isLoginClick, setIsLoginClick] = useState(false);
+  const [isSignUpClick, setIsSignUpClick] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    Id: '',
+    Pw: '',
+  });
+  const navigate = useNavigate();
 
-  const onClickLoginBtn = () => {
-    setIsLoginClick(!isLoginClick);
+  const onClickBtn = setterFunc => {
+    setterFunc(prev => !prev);
   };
+
+  const handleChangeId = e => {
+    setUserInfo({
+      ...userInfo,
+      Id: e.target.value,
+    });
+  };
+
+  const handleChangePw = e => {
+    setUserInfo({
+      ...userInfo,
+      Pw: e.target.value,
+    });
+  };
+
+  const validationPw = e => {
+    if (e.target.value === userInfo.Pw) {
+      setIsValid(prev => !prev);
+    }
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (isValid) {
+      alert('회원가입 완료');
+      axios
+        .post('/register', userInfo)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      setIsLoginClick(prev => !prev);
+      setIsSignUpClick(prev => !prev);
+    } else {
+      alert('비밀번호가 같지 않습니다.');
+    }
+  };
+
+  const handleLogin = e => {
+    e.preventDefault();
+    axios.get('/login', userInfo).then(res => {
+      localStorage.setItem('AccessToken', res.accessToken);
+      localStorage.setItem('RefreshToken', res.refreshToken);
+    });
+    navigate('/');
+  };
+
   return (
     <LoginWrapper>
       <LoginBox>
@@ -33,38 +91,86 @@ const Login = () => {
               id="outlined-input"
               label="Id"
               type="text"
-              autoComplete="current-password"
+              onChange={handleChangeId}
             />
             <TextField
               id="outlined-password-input"
               label="Password"
               type="password"
               autoComplete="current-password"
+              onChange={handleChangePw}
             />
             <LoginBtn
               variant="outlined"
               color="info"
               size="large"
               type="submit"
+              onClick={handleLogin}
             >
               로그인
             </LoginBtn>
           </InputBox>
         )}
+        {isSignUpClick && (
+          <InputBox
+            component="form"
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '25ch' },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField
+              id="outlined-input"
+              label="Id"
+              type="text"
+              autoComplete="current-password"
+              onChange={handleChangeId}
+            />
+            <TextField
+              id="outlined-password-input"
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+              onChange={handleChangePw}
+            />
+            <TextField
+              id="outlined-password-input"
+              label="Confirm Password"
+              type="password"
+              autoComplete="current-password"
+              onChange={validationPw}
+            />
+            <LoginBtn
+              variant="outlined"
+              color="info"
+              size="large"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              회원가입
+            </LoginBtn>
+          </InputBox>
+        )}
         <BtnWrapper spacing={2} direction="column">
-          {!isLoginClick && (
+          {!isLoginClick && !isSignUpClick && (
             <>
               <Button
                 variant="contained"
                 size="large"
-                onClick={onClickLoginBtn}
+                onClick={() => onClickBtn(setIsLoginClick)}
               >
                 <div>
                   <SlLogin />
                   로그인
                 </div>
               </Button>
-              <Button variant="contained" size="large" color="info">
+              <Button
+                variant="contained"
+                size="large"
+                color="info"
+                onClick={() => onClickBtn(setIsSignUpClick)}
+              >
                 <div>
                   <IoPersonAdd />
                   회원가입
