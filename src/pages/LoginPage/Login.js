@@ -67,10 +67,15 @@ const Login = () => {
 
   const handleLogin = e => {
     e.preventDefault();
-    axios.get('/login', userInfo).then(res => {
-      localStorage.setItem('AccessToken', res.accessToken);
-      localStorage.setItem('RefreshToken', res.refreshToken);
-    });
+    axios
+      .get('/login', userInfo)
+      .then(res => {
+        localStorage.setItem('accessToken', res.accessToken);
+        localStorage.setItem('refreshToken', res.refreshToken);
+      })
+      .catch(err => {
+        return err;
+      });
     navigate('/');
   };
 

@@ -1,11 +1,10 @@
 import styled from 'styled-components';
-import { AiOutlineCheck } from 'react-icons/ai';
+import LogoImg from '../icon/logo.png';
 
 const Logo = () => {
   return (
     <LogoWrapper>
-      <h1>Today Check</h1>
-      <AiOutlineCheck />
+      <img src={LogoImg} alt="" />
     </LogoWrapper>
   );
 };
@@ -17,7 +16,8 @@ const LogoWrapper = styled.div`
   font-size: 1.5rem;
   font-family: 'Josefin Sans', sans-serif;
 
-  h1 {
-    margin-right: 0.5rem;
+  img {
+    width: 13rem;
+    height: 4rem;
   }
 `;
